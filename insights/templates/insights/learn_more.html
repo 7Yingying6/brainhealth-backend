@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Learn More – Credible Australian Sources</title></head>
+<body>
+  <h1>Credible Australian Sources</h1>
+  <p>These external links provide background on vitamin D, sun exposure, and brain health.</p>
+  <ul>
+    {% for s in sources %}
+      <li><a href="{{ s.url }}" target="_blank" rel="noopener">{{ s.name }}</a></li>
+    {% endfor %}
+  </ul>
+  <p><a href="{% url 'insights:hub' %}">← Back to Insight Hub</a></p>
+</body>
+</html>

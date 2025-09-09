@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Brain Health News (Curated)</title>
+  <style>
+    .card { border:1px solid #eee; border-radius:10px; padding:16px; margin:12px 0; overflow:auto; }
+    .thumb { max-width:200px; float:right; margin:0 0 10px 10px; }
+    .meta { color:#666; font-size:0.9em; margin-bottom:8px; }
+  </style>
+</head>
+<body>
+  <h1>Brain Health News (Curated)</h1>
+  <p>Latest credible articles related to vitamin D and brain health.</p>
+
+  {% for a in articles %}
+    <div class="card">
+      {% if a.image_url %}<img class="thumb" src="{{ a.image_url }}" alt="">{% endif %}
+      <h3><a href="{{ a.url }}" target="_blank" rel="noopener">{{ a.title }}</a></h3>
+      <div class="meta">
+        <strong>Source:</strong> {{ a.source }}
+        {% if a.author %} • <strong>Author:</strong> {{ a.author }}{% endif %}
+        • <strong>Published:</strong> {{ a.date_published|date:"M d, Y" }}
+      </div>
+    </div>
+  {% empty %}
+    <p>No curated items yet. Please add some in the admin.</p>
+  {% endfor %}
+</body>
+</html>

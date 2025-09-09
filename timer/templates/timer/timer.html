@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sun Exposure Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0 0 20px 0;
+        }
+
+        .time-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000;
+            margin: 20px 0;
+            background: #eee;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .input-display {
+            color: #666;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+
+        .preset-buttons {
+            margin: 15px 0;
+        }
+
+        .preset-btn {
+            background: #ddd;
+            border: 1px solid #999;
+            padding: 8px 12px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .preset-btn:hover {
+            background: #ccc;
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 15px 0;
+        }
+
+        .numpad-btn {
+            background: #eee;
+            border: 1px solid #999;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .numpad-btn:hover {
+            background: #ddd;
+        }
+
+        .control-buttons {
+            margin-top: 15px;
+        }
+
+        .start-btn,
+        .reset-btn {
+            padding: 10px 20px;
+            border: 1px solid #333;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+
+        .start-btn {
+            background: #cfc;
+            border-color: #0c0;
+        }
+
+        .reset-btn {
+            background: #fcc;
+            border-color: #c00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sun Exposure Timer</h1>
+
+        <div id="timer-container" data-timer-seconds="{{ timer_seconds }}"></div>
+
+        <div class="time-display" id="timeDisplay">00:00</div>
+
+        <div class="input-display" id="inputDisplay">Enter minutes</div>
+
+        <div class="preset-buttons">
+            <button class="preset-btn" data-minutes="5">5 min</button>
+            <button class="preset-btn" data-minutes="10">10 min</button>
+            <button class="preset-btn" data-minutes="15">15 min</button>
+            <button class="preset-btn" data-minutes="20">20 min</button>
+            <button class="preset-btn" data-minutes="30">30 min</button>
+        </div>
+
+        <div class="numpad">
+            <button class="numpad-btn" data-value="1">1</button>
+            <button class="numpad-btn" data-value="2">2</button>
+            <button class="numpad-btn" data-value="3">3</button>
+            <button class="numpad-btn" data-value="4">4</button>
+            <button class="numpad-btn" data-value="5">5</button>
+            <button class="numpad-btn" data-value="6">6</button>
+            <button class="numpad-btn" data-value="7">7</button>
+            <button class="numpad-btn" data-value="8">8</button>
+            <button class="numpad-btn" data-value="9">9</button>
+            <button class="numpad-btn" data-value="0">0</button>
+            <button class="numpad-btn" data-value="clear">C</button>
+            <button class="numpad-btn" data-value="enter">Start</button>
+        </div>
+
+        <div class="control-buttons">
+            <button class="start-btn" id="startBtn">Start Timer</button>
+            <button class="reset-btn" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        class SunTimer {
+            constructor(timerSeconds) {
+                if (timerSeconds) {
+                    this.totalSeconds = parseInt(timerSeconds);
+                    this.currentSeconds = this.totalSeconds;
+                    this.updateDisplay();
+                } else {
+                    this.totalSeconds = 0;
+                    this.currentSeconds = 0;
+                    this.isRunning = false;
+                    this.interval = null;
+
+                    this.initializeElements();
+                    this.bindEvents();
+                }
+            }
+
+            initializeElements() {
+                this.timeDisplay = document.getElementById('timeDisplay');
+                this.inputDisplay = document.getElementById('inputDisplay');
+                this.startBtn = document.getElementById('startBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+            }
+
+            bindEvents() {
+                // Preset buttons
+                document.querySelectorAll('.preset-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const minutes = parseInt(e.target.dataset.minutes);
+                        this.setTime(minutes);
+                    });
+                });
+
+                // Numpad buttons
+                document.querySelectorAll('.numpad-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const value = e.target.dataset.value;
+                        this.handleInput(value);
+                    });
+                });
+
+                // Control buttons
+                this.startBtn.addEventListener('click', () => this.startTimer());
+                this.resetBtn.addEventListener('click', () => this.resetTimer());
+            }
+
+            setTime(minutes) {
+                this.totalSeconds = minutes * 60;
+                this.currentSeconds = this.totalSeconds;
+                this.updateDisplay();
+                this.inputDisplay.textContent = `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
+
+            handleInput(value) {
+                if (value === 'clear') {
+                    this.totalSeconds = 0;
+                    this.updateDisplay();
+                    this.inputDisplay.textContent = 'Enter minutes';
+                } else if (value === 'enter') {
+                    if (this.totalSeconds > 0) {
+                        this.startTimer();
+                    }
+                } else {
+                    const digit = parseInt(value);
+                    const currentMinutes = Math.floor(this.totalSeconds / 60);
+                    const newMinutes = currentMinutes * 10 + digit;
+
+                    if (newMinutes <= 180) { // Max 3 hours
+                        this.setTime(newMinutes);
+                    }
+                }
+            }
+
+            updateDisplay() {
+                const minutes = Math.floor(this.totalSeconds / 60);
+                const seconds = this.totalSeconds % 60;
+                this.timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            startTimer() {
+                if (this.totalSeconds === 0) return;
+                if (this.isRunning) return;
+
+                this.isRunning = true;
+                this.currentSeconds = this.totalSeconds;
+                this.startBtn.textContent = 'Pause';
+                this.startBtn.style.background = '#ffa';
+
+                this.interval = setInterval(() => {
+                    this.currentSeconds--;
+
+                    const minutes = Math.floor(this.currentSeconds / 60);
+                    const seconds = this.currentSeconds % 60;
+                    this.timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                    if (this.currentSeconds <= 0) {
+                        this.timerComplete();
+                    }
+                }, 1000);
+            }
+
+            pauseTimer() {
+                this.isRunning = false;
+                this.startBtn.textContent = 'Resume';
+                this.startBtn.style.background = '#cfc';
+                clearInterval(this.interval);
+            }
+
+            resetTimer() {
+                this.isRunning = false;
+                this.startBtn.textContent = 'Start Timer';
+                this.startBtn.style.background = '#cfc';
+                clearInterval(this.interval);
+                this.totalSeconds = 0;
+                this.updateDisplay();
+                this.inputDisplay.textContent = 'Enter minutes';
+            }
+
+            timerComplete() {
+                clearInterval(this.interval);
+                this.isRunning = false;
+                this.startBtn.textContent = 'Start Timer';
+                this.startBtn.style.background = '#cfc';
+
+                alert('Sun exposure time complete! ☀️');
+            }
+        }
+
+        // Initialize timer when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerSeconds = document.getElementById('timer-container').dataset.timerSeconds;
+            if (timerSeconds) {
+                new SunTimer(timerSeconds);
+            } else {
+                new SunTimer();
+            }
+
+        });
+    </script>
+</body>
+
+</html>

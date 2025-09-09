@@ -1,0 +1,236 @@
+<!-- templates/vitamin_d_helper.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load uv_filters %}
+<!-- Embedded Timer -->
+{% include 'timer/timer_component.html' with initial_seconds=timer_seconds
+recommended_minutes=recommendation.max_minutes %}
+
+{% block extra_css %}
+<style>
+    .location-status {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .location-active {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .location-inactive {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+
+    #detect-location.loading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Vitamin D Helper</h2>
+
+    <!-- Skin Type Selection -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Select Your Skin Type</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="skin_type_submit" class="btn btn-primary">Save Skin Type</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Location Settings -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Location Settings</h3>
+        </div>
+        <div class="card-body">
+            <!-- Manual City Form -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Melbourne Suburb or City</label>
+                    {{ city_form.city }}
+                    <div class="form-text">Enter your Melbourne suburb or Victorian city</div>
+                </div>
+                <button type="submit" name="city_submit" class="btn btn-primary">Save Location</button>
+            </form>
+
+            <hr>
+
+            <!-- Auto-detect Location -->
+            <div class="text-center">
+                <p>Or detect your location automatically:</p>
+                <button id="detect-location" class="btn btn-outline-primary">
+                    <i class="bi bi-geo-alt"></i> Detect My Location
+                </button>
+                <div id="location-status" class="mt-2 small text-muted"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Status Display -->
+    <div class="location-status {% if has_location %}location-active{% else %}location-inactive{% endif %}">
+        <i class="bi bi-{% if has_location %}geo-alt-fill{% else %}geo-alt{% endif %}"></i>
+        {% if profile.city and profile.city != 'Melbourne' %}
+        Using location: {{ profile.city }}, Australia
+        {% elif profile.has_location %}
+        Using detected location
+        {% else %}
+        Using default location: Melbourne, Australia
+        {% endif %}
+    </div>
+
+    <!-- Weather Conditions -->
+    {% if weather_data %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Today's Conditions</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Location:</strong> {{ weather_data.location }}</p>
+            <p><strong>Condition:</strong> {{ weather_data.condition }}</p>
+            <p><strong>Temperature:</strong> {{ weather_data.temp }}°C</p>
+            <p><strong>UV Index:</strong> {{ weather_data.uv_index }} ({{ weather_data.uv_index|uv_index_level }})</p>
+
+            {% if is_good_conditions %}
+            <div class="alert alert-success">
+                <i class="bi bi-sun"></i> Good conditions for safe sun exposure!
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="bi bi-cloud"></i> Conditions may not be ideal for sun exposure.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    {% if recommendation %}
+    <div class="card">
+        <div class="card-header">
+            <h3>Recommended Sun Exposure</h3>
+        </div>
+        <div class="card-body">
+            <p>Based on your skin type, recommended exposure time:</p>
+            <h4 class="text-primary">{{ recommendation.min_minutes }} - {{ recommendation.max_minutes }} minutes</h4>
+            <p class="text-muted small">
+                <i class="bi bi-info-circle"></i>
+                This recommendation is for optimal vitamin D production without burning.
+            </p>
+            <!-- Add a button to pass time to timer -->
+            <div class="mt-3">
+                <form method="post" action="{% url 'start_timer' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="minutes" value="{{ recommendation.max_minutes }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-clock"></i> Start {{ recommendation.max_minutes }}-Minute Timer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const detectButton = document.getElementById('detect-location');
+        const statusDiv = document.getElementById('location-status');
+
+        detectButton.addEventListener('click', function () {
+            if (!navigator.geolocation) {
+                statusDiv.textContent = 'Geolocation is not supported by your browser';
+                statusDiv.className = 'mt-2 small text-danger';
+                return;
+            }
+
+            // Show loading state
+            detectButton.classList.add('loading');
+            statusDiv.textContent = 'Detecting your location...';
+            statusDiv.className = 'mt-2 small text-info';
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    statusDiv.textContent = 'Location detected! Saving...';
+
+                    // Send coordinates to server
+                    fetch('{% url "update_location_from_coords" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                statusDiv.textContent = 'Location saved successfully! Reloading...';
+                                statusDiv.className = 'mt-2 small text-success';
+
+                                // Reload page after a short delay to show updated weather
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            } else {
+                                statusDiv.textContent = 'Error: ' + data.error;
+                                statusDiv.className = 'mt-2 small text-danger';
+                                detectButton.classList.remove('loading');
+                            }
+                        })
+                        .catch(error => {
+                            statusDiv.textContent = 'Error saving location: ' + error;
+                            statusDiv.className = 'mt-2 small text-danger';
+                            detectButton.classList.remove('loading');
+                        });
+                },
+                function (error) {
+                    let errorMessage;
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location access denied. Please allow location access in your browser settings.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out.';
+                            break;
+                        default:
+                            errorMessage = 'Unknown error occurred.';
+                    }
+                    statusDiv.textContent = errorMessage;
+                    statusDiv.className = 'mt-2 small text-danger';
+                    detectButton.classList.remove('loading');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 600000
+                }
+            );
+        });
+    });
+</script>
+{% endblock %}

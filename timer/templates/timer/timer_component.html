@@ -1,0 +1,94 @@
+<div class="card mt-4">
+    <div class="card-header">
+        <h4>Sun Exposure Timer</h4>
+    </div>
+    <div class="card-body">
+        {% if recommended_minutes %}
+        <p class="text-success">
+            <i class="bi bi-clock"></i> Recommended time: {{ recommended_minutes }} minutes
+        </p>
+        {% endif %}
+
+        <div class="timer-display">
+            <h1 id="timer-display">00:00</h1>
+        </div>
+
+        <div class="timer-controls mt-3">
+            <button id="start-timer" class="btn btn-success">Start Timer</button>
+            <button id="pause-timer" class="btn btn-warning" disabled>Pause</button>
+            <button id="reset-timer" class="btn btn-danger" disabled>Reset</button>
+        </div>
+
+        {% if recommended_minutes %}
+        <div class="mt-3">
+            <button class="btn btn-outline-primary btn-sm" onclick="setRecommendedTime({{ recommended_minutes }})">
+                Set to Recommended Time
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    let timerInterval;
+    let secondsLeft = {{ initial_seconds|default: 0 }};
+    let isRunning = false;
+
+    function updateDisplay() {
+        const minutes = Math.floor(secondsLeft / 60);
+        const seconds = secondsLeft % 60;
+        document.getElementById('timer-display').textContent =
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function setRecommendedTime(minutes) {
+        secondsLeft = minutes * 60;
+        updateDisplay();
+        document.getElementById('reset-timer').disabled = false;
+    }
+
+    document.getElementById('start-timer').addEventListener('click', function () {
+        if (!isRunning) {
+            isRunning = true;
+            this.disabled = true;
+            document.getElementById('pause-timer').disabled = false;
+            document.getElementById('reset-timer').disabled = false;
+
+            timerInterval = setInterval(function () {
+                if (secondsLeft > 0) {
+                    secondsLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    alert('Time\'s up! Sun exposure session completed.');
+                    document.getElementById('start-timer').disabled = false;
+                    document.getElementById('pause-timer').disabled = true;
+                }
+            }, 1000);
+        }
+    });
+
+    document.getElementById('pause-timer').addEventListener('click', function () {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('start-timer').disabled = false;
+            this.disabled = true;
+        }
+    });
+
+    document.getElementById('reset-timer').addEventListener('click', function () {
+        clearInterval(timerInterval);
+        isRunning = false;
+        secondsLeft = {{ initial_seconds |default: 0 }
+    };
+    updateDisplay();
+    document.getElementById('start-timer').disabled = false;
+    document.getElementById('pause-timer').disabled = true;
+    this.disabled = true;
+    });
+
+    // Initialize display
+    updateDisplay();
+</script>

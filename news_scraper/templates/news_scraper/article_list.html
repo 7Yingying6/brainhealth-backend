@@ -1,0 +1,25 @@
+<!-- Top hero -->
+<div style="margin:20px 0; padding:16px; border:1px solid #eee; border-radius:10px;">
+  <h2 style="margin-top:0;">Check your Vitamin D Risk</h2>
+
+  <!-- Always allow starting a new test -->
+  <a href="{% url 'insights:questionnaire_start' %}"
+     style="display:inline-block; padding:12px 18px; border-radius:8px; text-decoration:none; border:1px solid #ccc; margin-right:8px;">
+    Test My Vitamin D Level
+  </a>
+
+  <!-- Only show if we have a stored result -->
+  {% if vd_result %}
+    <a href="{% url 'insights:questionnaire_result' %}"
+       style="display:inline-block; padding:12px 18px; border-radius:8px; text-decoration:none; border:1px solid #ccc;">
+      View My Vitamin D Level
+    </a>
+  {% endif %}
+</div>
+
+<p><a href="/insights/">Go to Insight Hub</a>
+  <!-- optional curated news link; delete if you want it fully hidden -->
+  &nbsp;|&nbsp; <a href="{% url 'brain_health_news' %}">🧠 Brain Health News (Curated)</a>
+</p>
+
+<!-- REMOVE the old keyword filter + scraped list block below -->
