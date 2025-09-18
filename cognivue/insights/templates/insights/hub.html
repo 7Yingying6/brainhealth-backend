@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Insight Hub – Vitamin D & Brain Health</title></head>
+<body>
+  <h1>Vitamin D & Brain Health</h1>
+  <p>
+    Low vitamin D has been associated with smaller brain volumes and poorer cognitive scores in observational research.
+    Sun exposure, skin type, season, clothing coverage, and diet/supplements all influence your vitamin D status.
+  </p>
+
+  <h3>What factors matter?</h3>
+  <ul>
+    <li><strong>Sun exposure:</strong> time outdoors between 10am–3pm</li>
+    <li><strong>Skin type:</strong> darker skin synthesises vitamin D more slowly</li>
+    <li><strong>Location & season:</strong> southern states in winter have lower UV</li>
+    <li><strong>Clothing coverage:</strong> more covered = less UV to skin</li>
+    <li><strong>Diet & supplements:</strong> oily fish, fortified milk/margarine, eggs; supplements can help</li>
+  </ul>
+
+  <p>
+    Want a personalised indication? Try the quick test:
+    <a href="{% url 'insights:questionnaire_start' %}">Test My Vitamin D Level</a>.
+  </p>
+
+  <p>
+    <a href="{% url 'insights:learn_more' %}">Learn More</a> |
+    <a href="{% url 'insights:disclaimer' %}">Supplementation disclaimer</a>
+  </p>
+</body>
+</html>

@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Data Awareness – Vitamin D Brain{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .container-awa {
+        max-width: 1080px;
+        margin: 0 auto;
+    }
+
+    /* Jumbotron */
+    .jumbotron {
+        background: linear-gradient(180deg, #e9f6ff 0%, #f7f9ff 100%);
+        border-radius: 16px;
+        padding: 28px 20px 36px;
+    }
+
+    .pill {
+        display: inline-block;
+        background: #e8e2ff;
+        color: #5a33ea;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .j-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 8px;
+        font-size: 28px;
+    }
+
+    .j-text {
+        font-size: 16px;
+        color: #2a2a2a;
+        margin: 0 0 10px;
+    }
+
+    .j-source {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        border: none;
+    }
+
+    .dot.active {
+        background: #6366f1;
+    }
+
+    /* CTA */
+    .cta-card {
+        background: #e9fff1;
+        border: 1px solid #cbf3d2;
+        border-radius: 14px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .cta-btn {
+        background: #16a34a;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+
+    /* Cards */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+    }
+
+    .card3d {
+        perspective: 1000px;
+        cursor: pointer;
+    }
+
+    .inner {
+        position: relative;
+        width: 100%;
+        height: 190px;
+        transition: transform .6s;
+        transform-style: preserve-3d;
+    }
+
+    .card3d.flipped .inner {
+        transform: rotateY(180deg);
+    }
+
+    .face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: 12px;
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .back {
+        transform: rotateY(180deg);
+    }
+
+    .chip {
+        padding: 2px 8px;
+        font-size: 12px;
+        border-radius: 999px;
+    }
+
+    .chip-green {
+        background: #e6f6ec;
+        color: #0a7d3a;
+    }
+
+    .chip-amber {
+        background: #fff1cc;
+        color: #7a5500;
+    }
+
+    .muted {
+        color: #6b7280;
+    }
+
+    .hint {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="app" class="page">
+    <!-- Jumbotron -->
+    <section class="jumbotron">
+        <div class="container-awa">
+            <div v-if="error" class="alert alert-danger mb-0">{{ error }}</div>
+            <template v-else>
+                <div class="pill">Fact {{ curIndex + 1 }} of {{ factoids.length }}</div>
+                <h1 class="j-title">
+                    <span class="me-1" aria-hidden="true">🧠</span> {{ current?.title }}
+                </h1>
+                <p class="j-text">{{ current?.text }}</p>
+                <div class="j-source" v-if="current?.source_url || current?.source_name">
+                    <span>Source:</span>
+                    <a :href="current.source_url" target="_blank" rel="noopener">{{ current.source_name ||
+                        current.source_url }}</a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-3">
+                    <button class="btn btn-light btn-sm" @click="prev">‹</button>
+                    <div class="dots">
+                        <button v-for="(f,i) in factoids" :key="f.id" class="dot" :class="{active: i===curIndex}"
+                            @click="go(i)"></button>
+                    </div>
+                    <button class="btn btn-light btn-sm" @click="next">›</button>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Questionnaire CTA -->
+    <section class="container-awa">
+        <div class="cta-card">
+            <div>
+                <h4 class="mb-1">Test Your Vitamin D Level</h4>
+                <div class="text-muted">Take our quick questionnaire to estimate your vitamin D level and brain-health
+                    risk.</div>
+            </div>
+            <a class="cta-btn" href="{% url 'insights:questionnaire_start' %}">Test Your Level</a>
+        </div>
+    </section>
+
+    <!-- Lifestyle cards -->
+    <section class="container-awa">
+        <h5 class="mb-2">Lifestyle Impact Explorer</h5>
+        <div class="grid">
+            <div v-for="t in tips" :key="t.id" class="card3d" :class="{flipped: t._flipped}"
+                @click="t._flipped = !t._flipped">
+                <div class="inner">
+                    <div class="face front">
+                        <div>
+                            <span class="me-2">☀️</span>
+                            <span class="chip" :class="t.impact === 'beneficial' ? 'chip-green' : 'chip-amber'">{{
+                                t.impact === 'beneficial' ? 'Beneficial' : 'Concerning' }}</span>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">{{ t.title }}</div>
+                            <div class="muted">{{ t.front_summary }}</div>
+                        </div>
+                        <div class="hint">Click to flip</div>
+                    </div>
+                    <div class="face back">
+                        <div class="fw-semibold">{{ t.title }}</div>
+                        <div class="mt-1">{{ t.back_detail }}</div>
+                        <div class="hint">Click to flip back</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+    const { createApp, ref, computed, onMounted, onBeforeUnmount } = Vue
+
+    createApp({
+        setup() {
+            const factoids = ref([])
+            const tips = ref([])
+            const error = ref(null)
+
+            const curIndex = ref(0)
+            const current = computed(() => factoids.value[curIndex.value])
+            let timer = null
+
+            function next() { if (factoids.value.length) curIndex.value = (curIndex.value + 1) % factoids.value.length }
+            function prev() { if (factoids.value.length) curIndex.value = (curIndex.value - 1 + factoids.value.length) % factoids.value.length }
+            function go(i) { curIndex.value = i }
+
+            function startAuto() { stopAuto(); timer = setInterval(next, 6000) }
+            function stopAuto() { if (timer) { clearInterval(timer); timer = null } }
+
+            async function load() {
+                try {
+                    const [f, t] = await Promise.all([
+                        fetch("{% url 'insights:api_factoids' %}").then(r => r.json()),
+                        fetch("{% url 'insights:api_tips' %}").then(r => r.json()),
+                    ])
+                    factoids.value = f
+                    tips.value = t
+                    startAuto()
+                } catch (e) {
+                    error.value = "Failed to load insights."
+                }
+            }
+
+            onMounted(load)
+            onBeforeUnmount(stopAuto)
+
+            return { factoids, tips, error, curIndex, current, next, prev, go }
+        }
+    }).mount('#app')
+</script>
+{% endblock %}

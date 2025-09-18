@@ -1,0 +1,29 @@
+[
+  { "model": "nutrition.mealplan", "pk": 1, "fields": { "day": "Monday", "meal_type": "breakfast", "food": 2 }},
+  { "model": "nutrition.mealplan", "pk": 2, "fields": { "day": "Monday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 3, "fields": { "day": "Monday", "meal_type": "dinner", "food": 4 }},
+
+  { "model": "nutrition.mealplan", "pk": 4, "fields": { "day": "Tuesday", "meal_type": "breakfast", "food": 4 }},
+  { "model": "nutrition.mealplan", "pk": 5, "fields": { "day": "Tuesday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 6, "fields": { "day": "Tuesday", "meal_type": "dinner", "food": 3 }},
+
+  { "model": "nutrition.mealplan", "pk": 7, "fields": { "day": "Wednesday", "meal_type": "breakfast", "food": 2 }},
+  { "model": "nutrition.mealplan", "pk": 8, "fields": { "day": "Wednesday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 9, "fields": { "day": "Wednesday", "meal_type": "dinner", "food": 4 }},
+
+  { "model": "nutrition.mealplan", "pk": 10, "fields": { "day": "Thursday", "meal_type": "breakfast", "food": 3 }},
+  { "model": "nutrition.mealplan", "pk": 11, "fields": { "day": "Thursday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 12, "fields": { "day": "Thursday", "meal_type": "dinner", "food": 4 }},
+
+  { "model": "nutrition.mealplan", "pk": 13, "fields": { "day": "Friday", "meal_type": "breakfast", "food": 4 }},
+  { "model": "nutrition.mealplan", "pk": 14, "fields": { "day": "Friday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 15, "fields": { "day": "Friday", "meal_type": "dinner", "food": 3 }},
+
+  { "model": "nutrition.mealplan", "pk": 16, "fields": { "day": "Saturday", "meal_type": "breakfast", "food": 2 }},
+  { "model": "nutrition.mealplan", "pk": 17, "fields": { "day": "Saturday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 18, "fields": { "day": "Saturday", "meal_type": "dinner", "food": 3 }},
+
+  { "model": "nutrition.mealplan", "pk": 19, "fields": { "day": "Sunday", "meal_type": "breakfast", "food": 4 }},
+  { "model": "nutrition.mealplan", "pk": 20, "fields": { "day": "Sunday", "meal_type": "lunch", "food": 1 }},
+  { "model": "nutrition.mealplan", "pk": 21, "fields": { "day": "Sunday", "meal_type": "dinner", "food": 2 }}
+]

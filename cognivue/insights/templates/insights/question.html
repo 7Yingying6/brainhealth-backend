@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Vitamin D Questionnaire</title>
+</head>
+<body>
+  <h1>Vitamin D Questionnaire</h1>
+  <p>Question {{ index|add:1 }} of {{ count }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <h3>{{ question.text }}</h3>
+    {% if question.helper %}<p><em>{{ question.helper }}</em></p>{% endif %}
+
+    {% for opt in question.options %}
+      <label style="display:block; margin:6px 0;">
+        <input
+          type="radio"
+          name="option"
+          value="{{ forloop.counter0 }}"
+          {% if selected is not None and selected == forloop.counter0 %}checked{% endif %}
+        >
+        {{ opt.label }}
+      </label>
+    {% endfor %}
+
+    <div style="margin-top:14px;">
+      <button type="submit" name="action" value="back">Back</button>
+      {% if is_last %}
+        <button type="submit" name="action" value="finish">Finish</button>
+      {% else %}
+        <button type="submit" name="action" value="next">Next</button>
+      {% endif %}
+    </div>
+  </form>
+</body>
+</html>
+

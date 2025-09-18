@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Your Vitamin D Result</title></head>
+<body>
+  <h1>Your Vitamin D Level</h1>
+  {% if result %}
+    <p><strong>Category:</strong> {{ result }}</p>
+    <p><strong>Total score:</strong> {{ total }}</p>
+  {% else %}
+    <p>No result yet — please complete the questionnaire.</p>
+  {% endif %}
+
+  <p><a href="/insights/disclaimer/">Supplementation disclaimer</a></p>
+  <p><a href="/">Return to homepage</a></p>
+</body>
+</html>

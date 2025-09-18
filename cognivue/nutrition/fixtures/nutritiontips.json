@@ -1,0 +1,86 @@
+[
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 1,
+    "fields": {
+      "title": "Fatty Fish: Brain's Best Friend",
+      "tip_text": "Salmon and mackerel support vitamin D levels.",
+      "expanded_text": "Fatty fish like salmon, mackerel, and sardines are rich in vitamin D3 and omega-3 fats. Research suggests these nutrients work together for brain health \u2013 vitamin D receptors in the brain help regulate mood and memory, and higher vitamin D status is linked to better cognitive function:contentReference[oaicite:17]{index=17}:contentReference[oaicite:18]{index=18}. Eating oily fish a few times a week can help maintain vitamin D levels that support healthy brain aging.",
+      "related_foods": [
+        606,
+        591
+      ]
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 2,
+    "fields": {
+      "title": "Sunshine Mushrooms Lift Your Mood",
+      "tip_text": "UV-exposed mushrooms boost vitamin D to fight the blues.",
+      "expanded_text": "Mushrooms exposed to ultraviolet light synthesize vitamin D2 \u2013 earning the nickname \u201csunshine mushrooms.\u201d Including UV-treated mushrooms in your diet can naturally elevate vitamin D intake. Vitamin D plays a role in producing neurotransmitters that affect mood, and low vitamin D is associated with a higher risk of depression:contentReference[oaicite:19]{index=19}. Adding mushrooms (like UV-exposed portobello or maitake) to meals might help combat the winter blues and support brain health.",
+      "related_foods": [
+        672,
+        673,
+        674,
+        675
+      ]
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 3,
+    "fields": {
+      "title": "Egg Yolks: Small Package, Big Benefit",
+      "tip_text": "Eggs provide vitamin D and choline for brain health.",
+      "expanded_text": "Egg yolks are one of the few vegetarian-friendly sources of vitamin D (though in moderate amounts). A single large egg yolk provides about 40 IU of vitamin D:contentReference[oaicite:20]{index=20} along with choline \u2013 a nutrient vital for brain cell membranes and neurotransmitter synthesis. The combination may support cognitive function. While eggs alone won\u2019t meet your full vitamin D needs, they\u2019re a helpful addition to a brain-healthy diet. Plus, their choline content supports memory and learning processes.",
+      "related_foods": [
+        41,
+        42,
+        43
+      ]
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 4,
+    "fields": {
+      "title": "Fortified Foods: Daily D for Your Mind",
+      "tip_text": "Vitamin D-fortified milk and cereal support cognition.",
+      "expanded_text": "Many everyday foods are fortified with vitamin D (e.g. milk, plant-based milks, cereals, and orange juice):contentReference[oaicite:21]{index=21}. These fortified foods make it easier to reach vitamin D targets, which may in turn benefit your brain. Studies have found that adults with higher vitamin D levels tend to perform better on cognitive tests and have lower risk of dementia:contentReference[oaicite:22]{index=22}. Starting your morning with fortified dairy or cereal can give your brain a daily vitamin D boost.",
+      "related_foods": []
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 5,
+    "fields": {
+      "title": "Shellfish Surprise: Vitamin D and B12",
+      "tip_text": "Oysters and shrimp deliver vitamin D plus brain-critical B12.",
+      "expanded_text": "Certain seafood like oysters and shrimp provide vitamin D along with other brain-beneficial nutrients. **Oysters**, for example, are high in vitamin B12 and zinc in addition to ~270 IU of vitamin D per serving:contentReference[oaicite:23]{index=23}:contentReference[oaicite:24]{index=24}. Vitamin B12 is essential for nerve health and cognitive function. Meanwhile, vitamin D in these shellfish may support cognitive performance and mood. Including a variety of seafood \u2013 not just fish \u2013 can round out your brain-healthy diet with multiple nutrients.",
+      "related_foods": []
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 6,
+    "fields": {
+      "title": "Liver: An Old-School Brain Food",
+      "tip_text": "Beef liver offers vitamin D and neuro-supportive vitamins.",
+      "expanded_text": "Organ meats like beef liver contain modest vitamin D (about 42 IU in 3 oz:contentReference[oaicite:25]{index=25}) but are packed with other nutrients important for the brain \u2013 including vitamin B12, iron, and vitamin A. Historically considered \u201cbrain food,\u201d liver provides compounds that support red blood cells and oxygen supply to the brain. While you shouldn\u2019t eat it daily (due to high vitamin A), occasional portions of liver or liverwurst can contribute to your vitamin D intake and overall nutrient profile for brain health.",
+      "related_foods": []
+    }
+  },
+  {
+    "model": "nutrition.nutritiontip",
+    "pk": 7,
+    "fields": {
+      "title": "Sunshine Vitamin for a Sunny Mood",
+      "tip_text": "Higher vitamin D status is linked to better mood and memory.",
+      "expanded_text": "Vitamin D earned the nickname 'sunshine vitamin' because our brains and bodies thrive with adequate vitamin D. In fact, vitamin D functions as a neurosteroid \u2013 it binds to receptors in brain tissue and can modulate mood and cognition:contentReference[oaicite:26]{index=26}:contentReference[oaicite:27]{index=27}. Studies indicate that people with higher vitamin D levels tend to have a lower risk of depression and may experience sharper memory and thinking:contentReference[oaicite:28]{index=28}. Consuming vitamin D-rich foods (and getting safe sun exposure) helps ensure you have enough of this mood-lifting, memory-supporting nutrient.",
+      "related_foods": [
+        606
+      ]
+    }
+  }
+]
